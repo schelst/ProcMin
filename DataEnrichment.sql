@@ -10,15 +10,7 @@ declare
   l_selectprevRec   varchar2(250);
   l_jn_entered_at   timestamp;
     
-  cursor c_tables is
-        select table_name
-        from all_tables
-        where table_name like 'JN_%'
-        and table_name IN (select 'JN_'||table_name
-                           from all_constraints
-                           where r_constraint_name='PSN_PK')
-        and table_name = 'JN_PSN_PERSONEN'                   
-        ;
+ 
 
                          
     cursor c_data_enrich is
@@ -61,12 +53,13 @@ declare
     
 begin
 
-    for d in c_data_enrich(l_table_name) loop
+    for d in c_data_enrich loop
      l_operation      := d.operation;
      l_id             := d.id;
      l_jn_entered_at  := d.jn_entered_at;
+	 l_table_name     := d.table_name;
      
-      -- nagaan welke kolom is gewijzigd
+      -- nagaan welke kolom gewijzigd is
       if l_operation = 'UPD' then
         
              l_columns_upd := compareprevious(l_table_name, l_id, l_jn_entered_at);
@@ -82,7 +75,7 @@ begin
              end if;
         
       end if;
-      -- Andere enrichments
+      
       
       
     

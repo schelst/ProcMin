@@ -39,7 +39,7 @@ begin
       l_unt_exists:=0;
     END;
     
-    l_select_columns := 'jn_entered_at, psn_id, decode(jn_operation,''INS'',''INSERT'', ''UPD'', ''UPDATE'', ''DEL'', ''DELETE'',jn_operation)||'' on '||replace(l_table_name,'JN_','')||''' operation,'''||l_table_name||''',id';
+    l_select_columns := 'jn_entered_at, psn_id, decode(jn_operation,''INS'',''INSERT'', ''UPD'', ''UPDATE'', ''DEL'', ''DELETE'',jn_operation)||'' on '||replace(l_table_name,'JN_','')||''' operation,'''||l_table_name||''',id,jn_operation';
     
     IF l_table_name = 'JN_PSN_PERSONEN' THEN
       l_select_columns:=replace(l_select_columns, ', psn_id,', ', id,');
@@ -54,7 +54,7 @@ begin
     end if;
     
     
-    l_command := 'insert into PC_COMMANDS (jn_entered_at, psn_id, command, table_name, id, unt_id) select '||l_select_columns||' from '||l_table_name||' where jn_entered_at>='||l_start_date;
+    l_command := 'insert into PC_COMMANDS (jn_entered_at, psn_id, command, table_name, id, operation, unt_id) select '||l_select_columns||' from '||l_table_name||' where jn_entered_at>='||l_start_date;
     
     dbms_output.put_line(l_command);
     
